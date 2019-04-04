@@ -18,7 +18,7 @@
 To explain how the program works, we will track what happens to an individual frame of the test footage.
 ### I. The test footage is loaded into the program
 The first frame is read.<br>
-*The original frame is displayed.*
+*The original frame is displayed.*<br>
 ![Original Video](/Images/original.png)
 
 ### II. The original frame is fed into **detect_edges()**:
