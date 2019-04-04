@@ -31,7 +31,7 @@ The first frame is read.<br>
     
 ### III. The edge-detected image is fed into detect_lines():
     edge-detected image is fed into Hough Line detection
-    all of the lines returned from Hough Line Detection is overlayed onto the original frame
+    all of the lines returned from Hough Line Detection are overlayed onto the original frame
 *The line-detected image is displayed*<br>
 ![Line Detected Video!](/Images/lines.png)
 
