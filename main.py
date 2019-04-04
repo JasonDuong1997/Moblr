@@ -11,14 +11,10 @@ file_name = "GP010020.MP4"
 def main():
 	# Reading Video
 	video = Video(file_name)
-	#image = video.get_frame()
 
 	# Memory of previous lines
 	line_list = []
 	line_coords = []
-
-	line_list2 = []
-	line_coords2 = []
 
 	frame_count = 1
 
