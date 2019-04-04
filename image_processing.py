@@ -11,7 +11,7 @@ def resize(src_image):
 #	INPUT: 	Image
 #	OUTPUT:	Edge-Detected Image
 #	DESCRIPTION: Converts image to grey-scale, blur the image so that edges will be smoother to find,
-#		and then finally apply edge detection.
+#		and then finally apply Canny edge detection.
 def detect_edges(src_image):
 	image = cv2.cvtColor(src_image, cv2.COLOR_BGR2GRAY)
 	image = cv2.GaussianBlur(image, (7,7), 0)
@@ -21,23 +21,29 @@ def detect_edges(src_image):
 
 # 	INPUT: 	Original Image, Edge-Detected Image
 #	OUTPUT:	Line-Detected Image
-#	DESCRIPTION: Applies line detection on edge-detected image and then overlays the 2 strongest lines onto the original image.
+#	DESCRIPTION: Applies line detection on edge-detected image and filters through the lines to overlay only the 2
+# 		strongest lines onto the original image.
 def detect_lane_lines(src_image, edge_image, line_list, line_coords, frame_count, frames_per_activation):
 	line_min = 140
 	gap_max = 2
 
-
 	# if not the activation frame, add new lines to line_list
 	if (frame_count%frames_per_activation != 0):
 		try:
+			# HoughLinesP returns a list of lines. Each line is in the form of [x1, y1, x2, y2]
 			for line in cv2.HoughLinesP(edge_image, 1, np.pi/180, 100, np.array([]), line_min, gap_max):
+				# line_list is the accumulation of the lines found across multiple frames
 				line_list.append(line)
 		except TypeError:
+			# this is when HoughLinesP does not find any lines
 			pass
 		finally:
+			# draws the lines onto src_image
 			for line_coord in line_coords:
 				cv2.line(src_image, (line_coord[0], line_coord[1]), (line_coord[2], line_coord[3]), (255, 0, 0), thickness=4)
+	# if it is the activation frame
 	else:
+		# goes through the list of accumulated lines and returns only up to 2 of the "strongest" lines
 		line_coords_new, filtered_lines = filter_lines(src_image, line_list)
 		if (line_coords_new):
 			line_coords = line_coords_new
@@ -50,7 +56,8 @@ def detect_lane_lines(src_image, edge_image, line_list, line_coords, frame_count
 
 # 	INPUT: 	Original Image, Edge-Detected Image
 #	OUTPUT:	Line-Detected Image
-#	DESCRIPTION: Applies line detection on edge-detected image and then overlays those lines onto the original image.
+#	DESCRIPTION: Applies line detection on edge-detected image and then overlays all of those lines onto the original image
+# 		without filtering through the lines.
 def detect_lines(src_image, edge_image):
 	line_min = 140
 	gap_max = 2
@@ -64,19 +71,20 @@ def detect_lines(src_image, edge_image):
 	return src_image
 
 
-#	INPUT: List of All Lines from detect_lines()
-#	OUTPUT: Only important lines related to the lanes
-#	DESCRIPTION: Currently a simple filter that removes the lines detected from the car door in the frame
+#	INPUT: List of All Lines from detect_lane_ines()
+#	OUTPUT: Up to 2 of the strongest lines detected
+#	DESCRIPTION: Ignores the lines detected from the car body. Sorts through the line list by rounding up all of the duplicate
+#		lines and returning only up to two of the lines with the most amount of duplicates
 def filter_lines(src_image, lines):
 	height, width, channels = src_image.shape
 
-	# filter out lines detected from edges of car door in frame
+	# filter out lines detected from edges of car door in frame (hardcoded)
 	filtered_lines = []
 	for line in lines:
 		if (line[0][1] < (6/8)*height or line[0][3] < (6/8)*height):
 			filtered_lines.append(line)
 
-	# compile line information to list
+	# convert line information to list format
 	line_info_list = []
 	for line in filtered_lines:
 		x1 = line[0][0]
@@ -84,6 +92,7 @@ def filter_lines(src_image, lines):
 		x2 = line[0][2]
 		y2 = line[0][3]
 
+		# only add non-vertical lines
 		if (int(x2 - x1) != 0):
 			slope = int((y2 - y1)/(x2 - x1))
 			y_int = int(y2 - slope*x2)
@@ -92,7 +101,9 @@ def filter_lines(src_image, lines):
 	print("Number of lines found: {}" .format(len(line_info_list)))
 	print("Line List: {}" .format(line_info_list))
 
-	threshold = .05
+	# This part goes through the list of lines and determines if any two lines are similar if the slope & y-intercept
+	# of two lines are within 5% of each other.
+	similarity_threshold = .05
 	line_aggregator = []
 	for i in range(0, len(line_info_list)):
 		key_slope = line_info_list[i][0]
@@ -115,10 +126,10 @@ def filter_lines(src_image, lines):
 						slope_match = True
 					else:
 						slope_match = False
-				elif (abs(key_slope - true_slope)/true_slope < threshold):
+				elif (abs(key_slope - true_slope)/true_slope < similarity_threshold):
 					slope_match = True
 
-				if (abs(key_y_int - true_y_int)/true_y_int < threshold):
+				if (abs(key_y_int - true_y_int)/true_y_int < similarity_threshold):
 					y_int_match = True
 				else:
 					y_int_match = False
@@ -134,7 +145,7 @@ def filter_lines(src_image, lines):
 	print("Line_Aggregator Count: {}" .format(len(line_aggregator)))
 	print("Line Aggregator: {}" .format(line_aggregator))
 
-	# sorting the list by highest line votes
+	# sorting the list by highest number of duplicates
 	line_aggregator.sort(reverse=True, key=line_count)
 	print("Line Aggregator Sorted: {}" .format(line_aggregator))
 
