@@ -1,12 +1,12 @@
 # Moblr
 ## How to Run Program
 1. must have the road test footage named "GP010020.mp4" in this directory
-2. run command "python main.py"
+2. run command "*python main.py*"
 ## Files Involved
-*video_object.py*      just makes it easier to load in the .mp4 video and read each frame in the video sequentially<br>
-*image_processing.py*  is where the magic happens with edge_detection and line_detection<br>
-*GP010020.mp4*         is the test footage<br>
-*main.py*              is program driver that displays 4 windows:<br>
+**video_object.py** just makes it easier to load in the .mp4 video and read each frame in the video sequentially<br>
+**image_processing.py** is where the magic happens with edge_detection and line_detection<br>
+**GP010020.mp4** is the test footage<br>
+**main.py** is the program driver that displays 4 windows:<br>
 <ol>
 <li>Original Video: original, raw input video</li>
 <li>Edge-Detected Video: intermediary video that takes in the Original Video and runs detect_edges()</li>
@@ -16,8 +16,8 @@
 
 ## How the Program Works
 To explain how the program works, we will track what happens to an individual frame of the test footage.
-### I. The test footage is loaded into the program"
-The first frame is read.
+### I. The test footage is loaded into the program
+The first frame is read.<br>
 *The original frame is displayed.*
 ### II. The original frame is fed into **detect_edges()**:
     frame converted to grey-scale
@@ -25,10 +25,12 @@ The first frame is read.
     grey-scale image is fed into Canny Edge detection
     edge-detected image returned
     *The edge-detected image is displayed.*
+    
 ### III. The edge-detected image is fed into detect_lines():
     edge-detected image is fed into Hough Line detection
     all of the lines returned from Hough Line Detection is overlayed onto the original frame
     *The line-detected image is displayed*
+    
 ### IV. The edge-detected image is fed into detect_lane_lines():
     the lines detected across multiple frames is added to a line_list aggregator
     after every X amount of frames, the line_list is fed into filter_lines():
