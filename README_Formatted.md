@@ -1,28 +1,24 @@
 # Moblr
-
 ## How to Run Program
-'''
 1. must have the road test footage named "GP010020.mp4" in this directory
 2. run command "python main.py"
-'''
-
 ## Files Involved
-video_object.py     - just makes it easier to load in the .mp4 video and read each frame in the video sequentially
-image_processing.py - where the magic happens with edge_detection and line_detection
-GP010020.mp4        - test footage
-main.py             - program driver that displays 4 windows:
-                        1. Original Video: original, raw input video
-                        2. Edge-Detected Video: intermediary video that takes in the Original Video and runs detect_edges()
-                        3. Line-Detected Video: intermediary video that takes in Edge-Detected Video and runs detect_lines()
-                        4. Final Video: final video that takes in Edge-Detected Video and runs detect_lane_lines()
-
-
+*video_object.py*      just makes it easier to load in the .mp4 video and read each frame in the video sequentially<br>
+*image_processing.py*  is where the magic happens with edge_detection and line_detection<br>
+*GP010020.mp4*         is the test footage<br>
+*main.py*              is program driver that displays 4 windows:<br>
+<ol>
+<li>Original Video: original, raw input video</li>
+<li>Edge-Detected Video: intermediary video that takes in the Original Video and runs detect_edges()</li>
+<li>Line-Detected Video: intermediary video that takes in Edge-Detected Video and runs detect_lines()</li>
+<li>Final Video: final video that takes in Edge-Detected Video and runs detect_lane_lines()</li>
+</ol>
 ## How the Program Works
 ### I. First the video is loaded in
 The first frame is read.
 *The original frame is displayed.
 
-### II. The original frame is fed into detect_edges():
+### II. The original frame is fed into **detect_edges()**:
         frame converted to grey-scale because the edge detection algorithm only works on single-channel (grey-scale) images
         grey-scale image is blurred slightly to improve edge detection
         grey-scale image is fed into Canny Edge detection
