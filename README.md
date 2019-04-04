@@ -26,13 +26,13 @@ The first frame is read.<br>
     grey-scale image is blurred slightly to improve edge detection
     grey-scale image is fed into Canny Edge detection
     edge-detected image returned
-    *The edge-detected image is displayed.*
+*The edge-detected image is displayed.*<br>
 ![Edge Detected Video!](/Images/edge.png)
     
 ### III. The edge-detected image is fed into detect_lines():
     edge-detected image is fed into Hough Line detection
     all of the lines returned from Hough Line Detection is overlayed onto the original frame
-    *The line-detected image is displayed*
+*The line-detected image is displayed*<br>
 ![Line Detected Video!](/Images/lines.png)
 
 ### IV. The edge-detected image is fed into detect_lane_lines():
@@ -42,6 +42,6 @@ The first frame is read.<br>
     similar lines are grouped together based on slope & y-intercept
     the line are sorted based on number of duplicates
     up to two of the top two lines with the highest number of duplicates are returned
-    *The lane_line-detected image is displayed.*
+*The lane_line-detected image is displayed.*<br>
 ![Final Video!](/Images/final.png)
 
