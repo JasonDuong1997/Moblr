@@ -19,7 +19,7 @@ To explain how the program works, we will track what happens to an individual fr
 ### I. The test footage is loaded into the program
 The first frame is read.<br>
 *The original frame is displayed.*
-![Original Video](/Images/original.jpg)
+![Original Video](/Images/original.png)
 
 ### II. The original frame is fed into **detect_edges()**:
     frame converted to grey-scale
@@ -27,13 +27,13 @@ The first frame is read.<br>
     grey-scale image is fed into Canny Edge detection
     edge-detected image returned
     *The edge-detected image is displayed.*
-![Edge Detected Video](/Images/edge.jpg)
+![Edge Detected Video](/Images/edge.pmg)
     
 ### III. The edge-detected image is fed into detect_lines():
     edge-detected image is fed into Hough Line detection
     all of the lines returned from Hough Line Detection is overlayed onto the original frame
     *The line-detected image is displayed*
-![Line Detected Video](/Images/lines.jpg)
+![Line Detected Video](/Images/lines.png)
 
 ### IV. The edge-detected image is fed into detect_lane_lines():
     the lines detected across multiple frames is added to a line_list aggregator
@@ -43,5 +43,5 @@ The first frame is read.<br>
     the line are sorted based on number of duplicates
     up to two of the top two lines with the highest number of duplicates are returned
     *The lane_line-detected image is displayed.*
-![Final Video](/Images/final.jpg)
+![Final Video](/Images/final.png)
 
