@@ -39,16 +39,18 @@ def detect_lane_lines(src_image, edge_image, line_list, line_coords, frame_count
 			pass
 		finally:
 			# draws the lines onto src_image
-			for line_coord in line_coords:
-				cv2.line(src_image, (line_coord[0], line_coord[1]), (line_coord[2], line_coord[3]), (255, 0, 0), thickness=4)
+			draw_lines(src_image, line_coords)
+
 	# if it is the activation frame
 	else:
 		# goes through the list of accumulated lines and returns only up to 2 of the "strongest" lines
 		line_coords_new, filtered_lines = filter_lines(src_image, line_list)
+		# if the there are new line coordinates, update the current line coordinates
 		if (line_coords_new):
 			line_coords = line_coords_new
-		for line_coord in line_coords:
-			cv2.line(src_image, (line_coord[0], line_coord[1]), (line_coord[2], line_coord[3]), (255, 0, 0), thickness=4)
+		# draw the lines onto the image
+		draw_lines(src_image, line_coords)
+
 		line_list.clear()
 
 	return line_list, line_coords
@@ -75,7 +77,7 @@ def detect_lines(src_image, edge_image):
 #	OUTPUT: Up to 2 of the strongest lines detected
 #	DESCRIPTION: Ignores the lines detected from the car body. Sorts through the line list by rounding up all of the duplicate
 #		lines and returning only up to two of the lines with the most amount of duplicates
-def filter_lines(src_image, lines):
+def filter_lines(src_image, lines: list):
 	height, width, channels = src_image.shape
 
 	# filter out lines detected from edges of car door in frame (hardcoded)
@@ -98,8 +100,8 @@ def filter_lines(src_image, lines):
 			y_int = int(y2 - slope*x2)
 			line_info_list.append([slope,y_int])
 
-	print("Number of lines found: {}" .format(len(line_info_list)))
-	print("Line List: {}" .format(line_info_list))
+	# print("Number of lines found: {}" .format(len(line_info_list)))
+	# print("Line List: {}" .format(line_info_list))
 
 	# This part goes through the list of lines and determines if any two lines are similar if the slope & y-intercept
 	# of two lines are within 5% of each other.
@@ -162,6 +164,12 @@ def filter_lines(src_image, lines):
 			break
 
 	return line_coords, filtered_lines
+
+
+def draw_lines(src_image, lines: list):
+	for line in lines:
+		#			Image		X1		Y1			X2		Y2			Color
+		cv2.line(src_image, (line[0], line[1]), (line[2], line[3]), (255, 0, 0), thickness=4)
 
 
 def line_count(line):
