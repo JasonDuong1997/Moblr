@@ -3,9 +3,9 @@ import cv2
 
 #	INPUT: 	Image
 #	OUTPUT:	Resized Image
-#	DESCRIPTION: Currently set to reduce the size of the input image to 30% of both width and height dimensions.
-def resize(src_image):
-	return cv2.resize(src_image, (0, 0), fx=0.3, fy=0.3)
+#	DESCRIPTION: Currently set to reduce the size of the input image by a factor of both width and height dimensions.
+def resize(src_image, factor):
+	return cv2.resize(src_image, (0, 0), fx=factor, fy=factor)
 
 
 #	INPUT: 	Image
@@ -27,6 +27,8 @@ def detect_lane_lines(src_image, edge_image, line_list, line_coords, frame_count
 	line_min = 140
 	gap_max = 2
 
+	height, width, channels = src_image.shape
+
 	# if not the activation frame, add new lines to line_list
 	if (frame_count%frames_per_activation != 0):
 		try:
@@ -47,7 +49,14 @@ def detect_lane_lines(src_image, edge_image, line_list, line_coords, frame_count
 		line_coords_new, filtered_lines = filter_lines(src_image, line_list)
 		# if the there are new line coordinates, update the current line coordinates
 		if (line_coords_new):
-			line_coords = line_coords_new
+			# only display the new lines if they're not drastically different from the old lines
+			if (not line_coords):
+				line_coords = line_coords_new
+			y_avg_old = (line_coords[0][1] + line_coords[0][3])/2
+			y_avg_new = (line_coords_new[0][1] + line_coords_new[0][3])/2
+			if (is_similar(y_avg_old, y_avg_new, 0.2*height, True)):
+				line_coords = line_coords_new
+
 		# draw the lines onto the image
 		draw_lines(src_image, line_coords)
 
@@ -166,11 +175,26 @@ def filter_lines(src_image, lines: list):
 	return line_coords, filtered_lines
 
 
+### Helper Functions
+
+
 def draw_lines(src_image, lines: list):
 	for line in lines:
 		#			Image		X1		Y1			X2		Y2			Color
 		cv2.line(src_image, (line[0], line[1]), (line[2], line[3]), (255, 0, 0), thickness=4)
 
+
+def is_similar(item_a, item_b, tolerance, absolute=False):
+	if (not absolute):
+		if (abs(item_a - item_b)/item_a < tolerance):
+			return True
+		else:
+			return False
+	else:
+		if (abs(item_a - item_b) < tolerance):
+			return True
+		else:
+			return False
 
 def line_count(line):
 	return line[2]
