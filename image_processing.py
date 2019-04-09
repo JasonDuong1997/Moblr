@@ -121,38 +121,40 @@ def filter_lines(src_image, lines):
 				true_slope = line_item[0]
 				true_y_int = line_item[1]
 
+				# if the slope is 0
 				if (abs(true_slope) < 0.01):
 					if (abs(key_slope) < 0.01):
 						slope_match = True
-					else:
-						slope_match = False
+				# if slopes are similar
 				elif (abs(key_slope - true_slope)/true_slope < similarity_threshold):
 					slope_match = True
 
+				# if y-intercepts are similar
 				if (abs(key_y_int - true_y_int)/true_y_int < similarity_threshold):
 					y_int_match = True
-				else:
-					y_int_match = False
 
+				# if both slope and y-intercepts match
+				# take weighted average of the existing and new line information
 				if (slope_match and y_int_match):
-					line_item[0] = int((4*line_item[0] + key_slope)/5)
-					line_item[1] = int((4*line_item[1] + key_y_int)/5)
-					line_item[2] = line_item[2] + 1
+					line_item[0] = int((2*line_item[0] + key_slope)/3)		# slope
+					line_item[1] = int((2*line_item[1] + key_y_int)/3)		# y-intercept
+					line_item[2] = line_item[2] + 1							# count
 					break
-			if (not (slope_match and y_int_match)):
-				line_aggregator.append([int(key_slope), int(key_y_int), 0])
+				else:
+					line_aggregator.append([int(key_slope), int(key_y_int), 0])
 
-	print("Line_Aggregator Count: {}" .format(len(line_aggregator)))
-	print("Line Aggregator: {}" .format(line_aggregator))
+	# print("Line_Aggregator Count: {}" .format(len(line_aggregator)))
+	# print("Line Aggregator: {}" .format(line_aggregator))
 
 	# sorting the list by highest number of duplicates
 	line_aggregator.sort(reverse=True, key=line_count)
-	print("Line Aggregator Sorted: {}" .format(line_aggregator))
+	# print("Line Aggregator Sorted: {}" .format(line_aggregator))
 
 	# converting each line to (x,y) coordinates on each side of the screen
 	line_coords = []
 	count = 0
 	for line in line_aggregator:
+		# only save up to two lines
 		if (count < 2):
 			line_coords.append([0, int(line[1]), width, int(line[0]*width + line[1])])
 			count = count + 1
