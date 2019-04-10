@@ -4,6 +4,7 @@ class Video:
 	def __init__(self, file_name):
 		self.file = cv2.VideoCapture(file_name)		# video object
 		self.frame = None								# individual frame of the video selected
+		self.n_frames = int(self.file.get(cv2.CAP_PROP_FRAME_COUNT))
 
 	#	INPUT: 	Video
 	#	OUTPUT: Frame of Video
