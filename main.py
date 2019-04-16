@@ -13,7 +13,14 @@ file_name = "GP010020.MP4"
 # Switches
 graph = False
 save_data = False
-display = False
+display = True
+
+if (graph):
+	print("Graphing Results!")
+if (save_data):
+	print("Saving Data at the end!")
+if (display):
+	print("Displaying Frames!")
 
 def main():
 	factor = 0.3
@@ -38,7 +45,7 @@ def main():
 		file = open("data.csv", 'w')
 		writer = csv.writer(file)
 
-	for frame_count in range(0, video.n_frames):
+	for frame_count in range(0, video.n_frames-1):
 		# Get next frame in the video
 		image = video.get_frame()
 		image = Image.resize(image, factor)
@@ -86,6 +93,10 @@ def main():
 				video.file.release()
 				cv2.destroyAllWindows()
 				break
+
+	if (save_data):
+		print("Finished Writing!\n")
+		file.close()
 
 	if (graph):
 		plt.show()
