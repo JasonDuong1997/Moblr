@@ -42,7 +42,7 @@ def main():
 		plt.grid(True)
 
 	if (save_data):
-		file = open("data.csv", 'w')
+		file = open("data.csv", 'w', newline="")
 		writer = csv.writer(file)
 
 	for frame_count in range(0, video.n_frames-1):
